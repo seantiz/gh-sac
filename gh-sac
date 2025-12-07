@@ -8,6 +8,12 @@ fi
 
 query="$1"
 results=$(gh search repos "$query" --limit 10 --json fullName --jq '.[].fullName')
+
+if [ -z "$results" ]; then
+  echo "Nothing found for $query" >&2
+  exit 1
+fi
+
 selected=$(echo "$results" | fzf --height 40% --reverse)
 
 if [ -n "$selected" ]; then
