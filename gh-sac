@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -e
+
+if ! type -p fzf >/dev/null; then 
+  echo "error: install fzf (https://github.com/junegunn/fzf) to use this command" >&2 
+  exit 1 
+fi
+
+query="$1"
+results=$(gh search repos "$query" --limit 10 --json fullName --jq '.[].fullName')
+selected=$(echo "$results" | fzf --height 40% --reverse)
+
+if [ -n "$selected" ]; then
+  gh repo clone "$selected"
+fi
